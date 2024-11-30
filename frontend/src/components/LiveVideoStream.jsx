@@ -10,7 +10,6 @@ function LiveVideoStream() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState(null);
   const [chunkInterval, setChunkInterval] = useState(1000);
-  const api_endpoint = 'https://api.yourpartners.com/upload-video';
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isAudioOn, setIsAudioOn] = useState(false)
   const [transcript, setTranscript] = useState('');
@@ -18,7 +17,7 @@ function LiveVideoStream() {
   const [transcriptData, setTranscriptData] = useState([]);
   const sessionIdRef = useRef(Date.now());
   const [interimTranscript, setInterimTranscript] = useState('');
-
+  const NGROK_URL = 'https://f18e-92-40-177-156.ngrok-free.app';
   const startWebcam = async () => {
     try {
       // Check if getUserMedia is supported
@@ -136,15 +135,23 @@ function LiveVideoStream() {
 
   const sendTranscriptToServer = async (text) => {
     try {
-      console.log('\n📤 Sending to server:', text);
-      await axios.post('api_endpoint/transcript', {
-        text,
-        sessionId: sessionIdRef.current,
-        timestamp: new Date().toISOString()
+      console.log('\n📤 Sending transcript to server:', text);
+      await axios.post(`${NGROK_URL}/print`, {
+        text: text
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: false
       });
-      console.log('✅ Sent successfully');
+      console.log('✅ Transcript sent successfully');
     } catch (err) {
       console.error('❌ Error sending transcript:', err);
+      console.error('Full error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
     }
   };
 
@@ -249,14 +256,12 @@ function LiveVideoStream() {
       // Create FormData and append image
       const formData = new FormData();
       formData.append('thumbnail', blob, `thumbnail_${Date.now()}.jpg`);
-      formData.append('sessionId', sessionIdRef.current);
-      formData.append('timestamp', new Date().toISOString());
 
       // Send to server
-      await axios.post('api_endpoint/thumbnail', formData, {
+      await axios.post(`${NGROK_URL}/image`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-        },
+        }
       });
 
     } catch (err) {
