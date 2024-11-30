@@ -1,0 +1,22 @@
+{
+    "mac_adress": "a1b2c3d4",
+    "name": "microwave",
+    "device_info": "this is a device used to heat up food",
+    "parameters": [
+        {
+            "name": "state",
+            "info": "turns the microwave on or off. 1 for on. 0 for off",
+            "data_type": "bool"
+        },
+        {
+            "name": "time",
+            "info": "time for how long to turn the microwave on for",
+            "data_type": "int"
+        },
+        {
+            "name": "mode",
+            "info": "what heating level the microwave should be at. 0 for mild, 1 for warm, 2 for hot, 3 for full",
+            "data_type": "int"
+        }
+    ]
+}

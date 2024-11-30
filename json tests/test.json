@@ -1,0 +1,56 @@
+{
+    "agents": [
+        {
+            "device_info": "a pair of smart glasses",
+            "mac_adress": "aaccbb",
+            "name": "rayban meta glasses"
+        }
+    ],
+    "devices": [
+        {
+            "device_info": "this is a device used to heat up food",
+            "mac_adress": "a1b2c3d4",
+            "name": "microwave",
+            "parameters": [
+                {
+                    "data_type": "bool",
+                    "info": "turns the microwave on or off. 1 for on. 0 for off",
+                    "name": "state"
+                },
+                {
+                    "data_type": "int",
+                    "info": "time for how long to turn the microwave on for",
+                    "name": "time"
+                },
+                {
+                    "data_type": "int",
+                    "info": "what heating level the microwave should be at. 0 for mild, 1 for warm, 2 for hot, 3 for full",
+                    "name": "mode"
+                }
+            ]
+        },
+        {
+            "device_info": "this is an LED light",
+            "mac_adress": "aabbccdd",
+            "name": "bedroom light",
+            "parameters": [
+                {
+                    "data_type": "bool",
+                    "info": "turns the LED on or off. 1 for on. 0 for off",
+                    "name": "state"
+                },
+                {
+                    "data_type": "uint8",
+                    "info": "how bright the led is. ranges between 0 and 255",
+                    "name": "intensity"
+                },
+                {
+                    "data_type": "int",
+                    "info": "warmth of the LED. ranges from 0 to 255",
+                    "name": "warmth"
+                }
+            ]
+        }
+    ],
+    "network": []
+}
