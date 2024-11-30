@@ -70,12 +70,12 @@ def create_structured_output(
                 f"Schema: {schema}"
             )
         },
-        {
-            "type": "image_url",
-            "image_url": {
-                "url": image_url
-            }
-        }
+        # {
+        #     "type": "image_url",
+        #     "image_url": {
+        #         "url": image_url
+        #     }
+        # }
     ]
 
     

@@ -16,7 +16,7 @@ def convert_command(
     # step 3: get device schema using mac address
     # step 4: convert user command to structured output
     # step 5: return structured output
-
+    first_time = time()
     this_time = time()
     
     # step 1
@@ -43,6 +43,7 @@ def convert_command(
     structured_output = create_structured_output(user_command, device_name, device_info, image_url, device_schema.get("parameters"))
     # print(structured_output)
     print(f"Time taken for step 4: {time() - this_time}")
+    print(f"Total time taken: {time() - first_time}")
 
 
     return {
