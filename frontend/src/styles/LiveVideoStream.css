@@ -9,33 +9,60 @@
 }
 
 .video-preview {
-    width: 100%;
-    max-height: 70vh;
+    width: 70%;
+    max-height: calc(80vh - 100px);
     object-fit: cover;
     border-radius: 12px;
+    margin-bottom: 60px;
+    margin: 0 auto 60px;
+    aspect-ratio: 9/16;
+    display: block;
+}
+
+.video-preview.mobile {
+    width: 90%;
 }
 
 .controls.mobile {
     display: grid;
     grid-template-columns: 1fr;
     gap: 15px;
-    padding: 15px 10px;
+    padding: 15px;
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    background: transparent;
 }
 
 .controls.mobile button {
-    padding: 15px;
+    padding: 15px 30px;
+    min-width: 200px;
     font-size: 16px;
     border-radius: 25px;
     background: #2a2a3a;
     color: #fff;
     border: none;
     touch-action: manipulation;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.controls.mobile button:disabled {
+    opacity: 0.5;
+    background: #1a1a2a;
+}
+
+.controls.mobile button.active {
+    background: #ff3b30;
+}
+
+.controls.mobile button.streaming {
+    background: #34c759;
 }
 
 .controls.tablet {
@@ -61,20 +88,40 @@
     border-radius: 20px;
 }
 
-.error-message.mobile {
+.error-message {
     position: fixed;
+    top: 20px;
+    left: auto;
+    right: 20px;
+    transform: none;
+    background: rgba(255, 59, 48, 0.9);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 300px;
+}
+
+.error-message.mobile {
+    right: 20px;
     top: 70px;
-    left: 10px;
-    right: 10px;
+    left: auto;
+    width: auto;
+    max-width: 300px;
     background: rgba(255, 0, 0, 0.8);
     padding: 10px;
     border-radius: 8px;
     z-index: 1000;
+    transform: none;
 }
 
 @media (orientation: landscape) and (max-height: 500px) {
     .video-preview {
-        max-height: 50vh;
+        width: 40%;
+        max-height: 80vh;
     }
     
     .controls.mobile {
@@ -116,21 +163,6 @@
     100% { opacity: 1; }
   }
   
-  .error-message {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 59, 48, 0.9);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
   .interval-control {
     display: flex;
     align-items: center;
@@ -152,4 +184,24 @@
 
   .audio-recording {
     color: red;
+  }
+
+  .interim-transcript {
+    color: #888;
+    font-style: italic;
+  }
+
+  .final-transcript {
+    color: white;
+  }
+
+  .transcript {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
   }
