@@ -51,8 +51,7 @@ def upload_photo_to_imgbb(photo_path):
 
 # Example usage:
 if __name__ == "__main__":
-    api_key = "af1e0a74a40bf3c5a4126ecdd8b91600"
-    image_url = upload_photo_to_imgbb("/Users/yinbaicheng/Downloads/hiri/llm/shopping.webp", api_key)
+    image_url = upload_photo_to_imgbb("/Users/yinbaicheng/Downloads/hiri/llm/shopping.webp")
     if image_url:
         print(f"Uploaded image URL: {image_url}")
     else:
