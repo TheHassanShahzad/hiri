@@ -4,6 +4,8 @@ from image_to_mac import get_device_mac
 from typing import Dict, Any
 import requests
 
+from time import time
+
 def convert_command(
     user_command: str,
     user_image_path: str,
@@ -15,8 +17,12 @@ def convert_command(
     # step 4: convert user command to structured output
     # step 5: return structured output
 
+    this_time = time()
+    
     # step 1
     image_url = upload_photo_to_imgbb(user_image_path)
+    print(f"Time taken for step 1: {time() - this_time}")
+    this_time = time()
 
     # step 2
     device_list = str(requests.get(f"http://{devices_server_ip}/devices").json())
@@ -24,14 +30,20 @@ def convert_command(
     device_name = response.get("name")
     device_mac = response.get("mac")
     device_info = response.get("info")
+    print(f"Time taken for step 2: {time() - this_time}")
+    this_time = time()
 
     # step 3
     device_schema = requests.get(f"http://{devices_server_ip}/devices/{device_mac}/parameters").json()
     # print(device_schema.get("parameters"))
+    print(f"Time taken for step 3: {time() - this_time}")
+    this_time = time()
 
     # step 4
     structured_output = create_structured_output(user_command, device_name, device_info, image_url, device_schema.get("parameters"))
     # print(structured_output)
+    print(f"Time taken for step 4: {time() - this_time}")
+
 
     return {
         "mac_address": device_mac,

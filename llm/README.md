@@ -1,5 +1,22 @@
 # Language Model Callings and helpers
 
+## main.py
+
+This script orchestrates the entire process of converting user commands into structured device instructions.
+
+Usage:
+Set up the environment variables:
+```
+export OPENAI_API_KEY=<your_api_key>
+```
+
+```python
+from llm.main import convert_command
+
+result = convert_command("<user_command>", "<path_to_photo>")
+print(result)
+```
+
 ## upload_photo.py
 
 This function uploads a photo to ImgBB and returns the URL of the uploaded photo.
@@ -16,8 +33,9 @@ This script uses a language model to analyze an image and extract information ab
 
 Usage:
 ```
-export WORDWARE_API_KEY=<your_api_key>
+export OPENAI_API_KEY=<your_api_key>
 ```
+
 
 ## user_command_to_structured_output.py
 

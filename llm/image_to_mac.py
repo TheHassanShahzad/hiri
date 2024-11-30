@@ -1,71 +1,77 @@
-import os
-import requests
 import json
+import os
+from openai import OpenAI
+import requests
+from typing import Dict, Any
 
-def get_device_mac(device_image_url: str, command: str, all_devices: str) -> dict:
+def get_device_mac(device_image_url: str, command: str, all_devices: str) -> Dict[str, Any]:
     """
-    Call the Wordware API to get device MAC address from image.
-    
-    Args:
-        device_image_url (str): URL of the device image
-        command (str): Command parameter
-        all_devices (str): All devices parameter
-    
-    Returns:
-        dict: API response
-        
-    Raises:
-        requests.exceptions.RequestException: If the API call fails
+    Call OpenAI API to get device MAC address from image.
     """
+    client = OpenAI()
     
-    # API endpoint
-    url = "https://app.wordware.ai/api/released-app/45a76eaf-b47f-4ada-9438-ec20dc74fd46/run"
-    
-    # Get API key from environment variable
-    api_key = os.getenv("WORDWARE_API_KEY")
-    if not api_key:
-        raise ValueError("WORDWARE_API_KEY environment variable not set")
-    
-    # Prepare headers
-    headers = {
-        "Authorization": f"Bearer {api_key}"
-    }
-    
-    # Prepare request body
-    payload = {
-        "inputs": {
-            "device_image": {
-                "type": "image",
-                "image_url": device_image_url
+    # Define the response schema
+    response_format = {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "device_identification",
+            "description": "Device identification from image and command",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the device"
+                    },
+                    "mac": {
+                        "type": "string",
+                        "description": "The MAC address of the device"
+                    },
+                    "info": {
+                        "type": "string",
+                        "description": "The device description/information"
+                    }
+                },
+                "required": ["name", "mac", "info"],
+                "additionalProperties": False
             },
-            "command": command,
-            "all_devices": all_devices
-        },
-        "version": "^1.2"
+            "strict": True
+        }
     }
+
+    # Prepare the messages
+    messages = [
+        {
+            "role": "system",
+            "content": "You're in a home environment. Your job is to identify which device user is referring to. You only response with the name and mac address and device description of the device with nothing else."
+        },
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": f"Here's a list of devices: {all_devices}\nUser sent an image of the device and said {command}"
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": device_image_url
+                    }
+                }
+            ]
+        }
+    ]
     
     # Make API call
-    response = requests.post(url, headers=headers, json=payload)
-    response.raise_for_status()
-
-    # Parse the streaming response
-    lines = response.text.split('\n')
-    for line in lines:
-        if not line:
-            continue
-        try:
-            chunk = json.loads(line)
-            # print(chunk)
-            # Look for the structured generation result
-            if (chunk.get('type') == 'chunk' and 
-                chunk.get('value', {}).get('type') == 'outputs'):
-                # Extract the result
-                result = chunk['value'].get('values').get("new_structured_generation")
-                return result
-        except json.JSONDecodeError:
-            continue
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=messages,
+        response_format=response_format,
+        temperature=0,
+        max_tokens=300
+    )
     
-    raise ValueError("Could not find device information in response")
+    return json.loads(response.choices[0].message.content)
 
 
 if __name__ == "__main__":
