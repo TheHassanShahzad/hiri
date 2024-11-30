@@ -41,7 +41,7 @@ def get_device_mac(device_image_url: str, command: str, all_devices: str) -> dic
             "command": command,
             "all_devices": all_devices
         },
-        "version": "^1.0"
+        "version": "^1.2"
     }
     
     # Make API call
@@ -69,7 +69,7 @@ def get_device_mac(device_image_url: str, command: str, all_devices: str) -> dic
 
 
 if __name__ == "__main__":
-    image_url = "https://i.ibb.co/MnKQgyW/eda17727e9b0.jpg"
+    image_url = "https://store.panasonic.co.uk/media/.renditions/catalog/category/SKA/NN-DF38PBBPQ_2-HIGH_RES_1.jpg"
     response = get_device_mac(image_url, "heat it up", """
     "devices": [
         {
