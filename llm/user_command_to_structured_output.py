@@ -1,3 +1,4 @@
+import json
 import os
 from openai import OpenAI
 from typing import List, Dict, Any
@@ -95,7 +96,7 @@ def create_structured_output(
         max_tokens=4096  # Added max_tokens for vision model
     )
     
-    return response.choices[0].message.content
+    return json.loads(response.choices[0].message.content)
 
 # Example usage
 if __name__ == "__main__":

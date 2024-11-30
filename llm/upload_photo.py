@@ -1,6 +1,8 @@
 import requests
 import base64
 import os
+from PIL import Image
+import io
 
 def upload_photo_to_imgbb(photo_path):
 
@@ -23,9 +25,20 @@ def upload_photo_to_imgbb(photo_path):
     url = f"https://api.imgbb.com/1/upload"
     
     try:
-        # Read and encode the image using absolute path
-        with open(absolute_path, "rb") as file:
-            image_data = base64.b64encode(file.read())
+        # Open and resize the image
+        with Image.open(absolute_path) as img:
+            # Convert to RGB if image is in RGBA mode
+            if img.mode == 'RGBA':
+                img = img.convert('RGB')
+            
+            # Resize image maintaining aspect ratio
+            img.thumbnail((1024, 1024))
+            
+            # Save the resized image to bytes buffer
+            buffer = io.BytesIO()
+            img.save(buffer, format='JPEG', quality=85)
+            buffer.seek(0)
+            image_data = base64.b64encode(buffer.getvalue())
         
         # Prepare the payload
         payload = {
