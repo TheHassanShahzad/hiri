@@ -2,8 +2,11 @@
 #include <HTTPClient.h>
 
 // Wi-Fi credentials
-const char* ssid = "BT-6FCKZP";
-const char* password = "Yt4Gk6UePKDypC";
+//const char* ssid = "BT-6FCKZP";
+//const char* password = "Yt4Gk6UePKDypC";
+
+const char* ssid = "Shoreditch Exchange-Member";
+const char* password = "ShoreditchX!";
 
 // Flask server details
 const char* serverIP = "192.168.1.78"; // Replace with your Raspberry Pi's IP address
