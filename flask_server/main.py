@@ -302,6 +302,54 @@ def get_all_devices():
     except Exception as e:
         return jsonify({'error': 'Database error', 'details': str(e)}), 500
 
+@app.route('/devices-and-parameters', methods=['GET'])
+def get_devices_and_parameters():
+    try:
+        # Query devices and parameters with a single outer join
+        devices_query = (
+            Device.query
+            .outerjoin(Parameter)
+            .add_columns(
+                Parameter.id.label('param_id'),
+                Parameter.param_name,
+                Parameter.info.label('param_info'),
+                Parameter.data_type
+            )
+            .order_by(Device.id)
+        )
+
+        # Process the results
+        current_device = None
+        devices_list = []
+        
+        for row in devices_query:
+            device = row[0]  # The Device object
+            
+            # If we've moved to a new device
+            if current_device is None or current_device['id'] != device.id:
+                current_device = {
+                    'id': device.id,
+                    'mac_address': device.mac_address,
+                    'name': device.name,
+                    'info': device.info,
+                    'location': device.location,
+                    'parameters': []
+                }
+                devices_list.append(current_device)
+            
+            # Add parameter if it exists (row[1] is param_id)
+            if row[1] is not None:
+                current_device['parameters'].append({
+                    'id': row[1],  # param_id
+                    'param_name': row[2],  # param_name
+                    'info': row[3],  # param_info
+                    'data_type': row[4]  # data_type
+                })
+
+        return jsonify({'devices': devices_list}), 200
+    except Exception as e:
+        return jsonify({'error': 'Database error', 'details': str(e)}), 500
+
 
 @app.route('/agents', methods=['GET'])
 def get_all_agents():
