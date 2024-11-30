@@ -5,6 +5,7 @@ from typing import List, Dict, Any
 def create_structured_output(
     user_command: str,
     device_name: str,
+    device_info: str,
     image_url: str,
     schema: List[Dict[str, str]],
 ) -> Dict[str, Any]:
@@ -14,7 +15,8 @@ def create_structured_output(
     Args:
         user_command: The user's command/input text
         device_name: The name of the device to analyze
-        image_path: url to an image file to analyze
+        device_info: The info of the device to analyze
+        image_url: url to an image file to analyze
         output_schema: List of dictionaries defining the expected parameters
             Each dict should have: {"name": str, "type": str, "description": str}
             type can be "string", "number", "boolean"
@@ -26,12 +28,12 @@ def create_structured_output(
     
     # Create the JSON schema for the response format
     for param in schema:
-        assert param["type"] in ["string", "number", "boolean"], "Invalid parameter type"
+        assert param["data_type"] in ["string", "number", "boolean"], "Invalid parameter type"
     properties = {}
     for param in schema:
-        properties[param["name"]] = {
-            "type": param["type"],
-            "description": param["description"]
+        properties[param["param_name"]] = {
+            "type": param["data_type"],
+            "description": param["info"]
         }
     
     response_format = {
@@ -42,7 +44,7 @@ def create_structured_output(
             "schema": {
                 "type": "object",
                 "properties": properties,
-                "required": [param["name"] for param in schema],
+                "required": [param["param_name"] for param in schema],
                 "additionalProperties": False
             },
             "strict": True
@@ -62,6 +64,7 @@ def create_structured_output(
             "type": "text",
             "text": (
                 f"Device name: {device_name}\n"
+                f"Device info: {device_info}\n"
                 f"User command: {user_command}\n"
                 f"Schema: {schema}"
             )
@@ -85,7 +88,7 @@ def create_structured_output(
 
     
     response = client.chat.completions.create(
-        model="gpt-4o",  # Changed to vision model to handle images
+        model="gpt-4o-mini",  # Changed to vision model to handle images
         messages=messages,
         response_format=response_format,
         temperature=0.1,
@@ -99,19 +102,19 @@ if __name__ == "__main__":
     # Example schema
     schema = [
         {
-            "name": "temperature",
-            "type": "number",
-            "description": "The temperature of the microwave"
+            "param_name": "temperature",
+            "data_type": "number",
+            "info": "The temperature of the microwave"
         },
         {
-            "name": "time",
-            "type": "number",
-            "description": "The time to cook the food in seconds"
+            "param_name": "time",
+            "data_type": "number",
+            "info": "The time to cook the food in seconds"
         }
     ]
     
     # Example command with image
-    command = "heat my food to 180 degrees for 3 minutes"
+    command = "heat my food to 110 degrees for 3 minutes"
     image_url = "https://store.panasonic.co.uk/media/.renditions/catalog/category/SKA/NN-DF38PBBPQ_2-HIGH_RES_1.jpg"
     
     result = create_structured_output(command, "microwave", image_url, schema)
